@@ -102,7 +102,7 @@ namespace hobbyTrackerAPI.Controllers
             return CreatedAtAction("GetHobbyItem", new { id = hobbyItem.Id }, hobbyItem);
         }
 
-        // DELETE: api/HobbyItems/5
+        // DELETE: api/HobbyItems/[id]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHobbyItem([FromRoute] int id)
         {
@@ -128,8 +128,22 @@ namespace hobbyTrackerAPI.Controllers
             return _context.HobbyItem.Any(e => e.Id == id);
 		}
 
-		// GET: api/Hobby/Tags
+
+		// GET: api/Meme/Tags
 		[Route("tags")]
+		[HttpGet]
+		public async Task<List<string>> GetTags()
+		{
+			var memes = (from m in _context.HobbyItem
+						 select m.Tags).Distinct();
+
+			var returned = await memes.ToListAsync();
+
+			return returned;
+		}
+
+		// GET: api/Hobby/Tags
+		[Route("tag")]
 		[HttpGet]
 		public async Task<List<HobbyItem>> GetTagsItem([FromQuery] string tags)
 		{
