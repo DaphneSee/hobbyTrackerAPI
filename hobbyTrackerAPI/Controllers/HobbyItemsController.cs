@@ -131,12 +131,18 @@ namespace hobbyTrackerAPI.Controllers
 		// GET: api/Hobby/Tags
 		[Route("tags")]
 		[HttpGet]
-		public async Task<List<string>> GetTags()
+		public async Task<List<HobbyItem>> GetTagsItem([FromQuery] string tags)
 		{
-			var hobbies = (from m in _context.HobbyItem
-						 select m.Tags).Distinct();
+			var memes = from m in _context.HobbyItem
+						select m; //get all the memes
 
-			var returned = await hobbies.ToListAsync();
+
+			if (!String.IsNullOrEmpty(tags)) //make sure user gave a tag to search
+			{
+				memes = memes.Where(s => s.Tags.ToLower().Equals(tags.ToLower())); // find the entries with the search tag and reassign
+			}
+
+			var returned = await memes.ToListAsync(); //return the memes
 
 			return returned;
 		}
